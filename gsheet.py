@@ -42,5 +42,10 @@ class gsheet(object):
         }
         result = sheet.values().append(
             spreadsheetId=sheetid, range=sheetrange,
-            valueInputOption='RAW', body=body).execute()
-        
+            valueInputOption='USER_ENTERED', body=body).execute()
+
+        test = sheet.values().get(
+            spreadsheetId=sheetid, range='TestBot!R1:S1').execute()
+        rows = test.get('values', [1])
+        print('{0} rows retrieved.'.format(len(rows)))
+        print(rows)
