@@ -44,8 +44,28 @@ class gsheet(object):
             spreadsheetId=sheetid, range=sheetrange,
             valueInputOption='USER_ENTERED', body=body).execute()
 
-        test = sheet.values().get(
-            spreadsheetId=sheetid, range='TestBot!R1:S1').execute()
-        rows = test.get('values', [1])
-        print('{0} rows retrieved.'.format(len(rows)))
-        print(rows)
+    def read(self, sheetid, sheetrange, ivalue):
+        # Call the Sheets API
+        sheet = self.service.spreadsheets()
+        values = []
+        values.append(ivalue)
+        body = {
+             'values': values
+        }
+
+        result2 = sheet.values().get(spreadsheetId=sheetid, range=sheetrange).execute()
+        values = result2.get('values', [])
+        print('{0} rows retrieved.'.format(len(values)))
+        #print(result2)
+
+        if not values:
+            print('No data found.')
+        else:
+            #print('Name, Major:') #affichage console
+            for row in values:
+                # Print columns A and E, which correspond to indices 0 and 4.
+                print('%s, %s, %s' % (row[0], row[1], row[0]))
+                #await ctx.send(f"Vous devez attendre {row[0]} ou temps hors-ligne {row[1]}")
+        #print(f"Arg0: {args[0]}")
+
+

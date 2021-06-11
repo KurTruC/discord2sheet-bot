@@ -6,6 +6,7 @@ import discord
 from gsheet import *
 
 
+
 client = discord.Client()
 sheet = gsheet()
 
@@ -33,16 +34,24 @@ async def on_message(message):
 
         # Code
         msg = message.content[3:]
-        result = [x.strip() for x in msg.split(';')]
+        result = [x.strip() for x in msg.split(';')] ##+ ['=Q13'] + ['=R13']
         if len(result) == FIELDS:
             # Add
             print(message.created_at.strftime("%d.%m.%Y %H:%M"))
             DATA = [message.author.name] + [str(message.author.id)] + [str(message.created_at.strftime("%d.%m.%Y %H:%M"))] + [''] + result
             sheet.add(SPREADSHEET_ID, RANGE_NAME, DATA)
             #await message.channel.send('Vos données ont été enregistrées', delete_after=5)
+            embedVar = discord.Embed(title="Evolution", description="Vos donnees", color=0x00ffff)
+            embedVar.set_author(name="Las Zetas Val", url='https://docs.google.com/spreadsheets/d/1tJC5mw110MwVmHeSsyHhP7kBcaU0Gmw2TZAw-x7Ge50/edit#gid=0')
+            embedVar.add_field(name="Pseudo:", value=f"**{DATA[4]}**", inline=False)
+            embedVar.add_field(name="Puissance:", value=f"**{DATA[5]}**", inline=True)
+            embedVar.add_field(name="Level:", value=f"**{DATA[6]}**", inline=True)
+            embedVar.add_field(name="Contribution", value=f"**{DATA[7]}**", inline=True)
+            await message.channel.send(embed=embedVar, delete_after=30)
             await message.delete()
-            await message.channel.send(f":**{DATA[4]}**\nPuissance:**{DATA[5]}**\nLevel:**{DATA[6]}**\nContribution:**{DATA[7]}**\n\nVos données ont été enregistrées", delete_after=15)
-            
+            #await message.channel.send(f"Pseudo:**{DATA[4]}**\nPuissance:**{DATA[5]}**\nLevel:**{DATA[6]}**\nContribution:**{DATA[7]}**\n\nVos données ont été enregistrées\nAuto destruction du message dans 15s", delete_after=15)
+            #await message.channel.send(f"vous avez {DATA[3]}/s et vous voulez obtenir {DATA[4]}/s\nVous devez attendre ... ou ... (Temps hors ligne)\n**se message va s\'auto detruire dans 10 secondes**", delete_after=10) ## Voir le resultat
+
         else:
             # Needs more/less fields
             await message.channel.send('Erreur : Vous devez ajouter {0} champs, ce qui signifie qu\'il ne peut y avoir que {1} point virgule.'.format(FIELDS,FIELDS-1))
@@ -50,20 +59,25 @@ async def on_message(message):
     if message.content.startswith('!ba'):
         SPREADSHEET_ID = '1sKOLoQ054RbXuG5IW_ZSBc4wI6OZ0zp9_x-WieIeAfY' # Add ID here
         RANGE_NAME = 'K1'
+        SAMPLE_RANGE = 'R1:S1'
         FIELDS = 2 # Amount of fields/cells
 
         # Code
         msg = message.content[3:]
-        result = [x.strip() for x in msg.split(';')] #+ ['=R1'] + ['=S1']
+        result = [x.strip() for x in msg.split(';')] #+ ['=R1'] #+ ['=S1']
+        result2 = []
         if len(result) == FIELDS:
             # Add
             print(message.created_at.strftime("%d.%m.%Y %H:%M"))
             DATA = [message.author.name] + [str(message.author.id)] + [str(message.created_at.strftime("%d.%m.%Y %H:%M"))] + [''] + result
+            DATA2 = result2
             sheet.add(SPREADSHEET_ID, RANGE_NAME, DATA)
+            sheet.read(SPREADSHEET_ID, SAMPLE_RANGE, DATA2)
             #await message.channel.send('Vos données ont été enregistrées', delete_after=5)
             await message.delete()
-            await message.channel.send(f":**{DATA[4]}/s** -- :**{DATA[5]} -- {[rows]}", delete_after=15)
-            print(rows) #<--- is not correct row in Q13 et R13
+            await message.channel.send(f"Votre Argent:**{DATA[4]}/s** -- Votre Besoin:**{DATA[5]}/s**\n\nVos données ont été enregistrées\nAuto destruction du message dans 15s", delete_after=15)
+            #await message.channel.send(f"vous avez {DATA[3]}/s et vous voulez obtenir {DATA[4]}/s\nVous devez attendre ... ou ... (Temps hors ligne)\n**se message va s\'auto detruire dans 10 secondes**", delete_after=10) ## Voir le resultat
+            print(DATA2)
         else:
             # Needs more/less fields
             await message.channel.send('Erreur : Vous devez ajouter {0} champs, ce qui signifie qu\'il ne peut y avoir que {1} point virgule.'.format(FIELDS,FIELDS-1))
