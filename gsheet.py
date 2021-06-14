@@ -50,7 +50,7 @@ class gsheet(object):
         values = []
         values.append(ivalue)
         body = {
-             'values': values
+            'values': values
         }
 
         result2 = sheet.values().get(spreadsheetId=sheetid, range=sheetrange).execute()
@@ -67,5 +67,3 @@ class gsheet(object):
                 print('%s, %s, %s' % (row[0], row[1], row[0]))
                 #await ctx.send(f"Vous devez attendre {row[0]} ou temps hors-ligne {row[1]}")
         #print(f"Arg0: {args[0]}")
-
-

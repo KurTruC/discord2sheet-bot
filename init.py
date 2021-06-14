@@ -7,6 +7,7 @@ from gsheet import *
 
 
 
+
 client = discord.Client()
 sheet = gsheet()
 
@@ -29,7 +30,7 @@ async def on_message(message):
     # Command to insert data to excel
     if message.content.startswith('!ev'):
         SPREADSHEET_ID = '1sKOLoQ054RbXuG5IW_ZSBc4wI6OZ0zp9_x-WieIeAfY' # Add ID here
-        RANGE_NAME = 'A1'
+        RANGE_NAME = 'A2'
         FIELDS = 4 # Amount of fields/cells
 
         # Code
@@ -56,9 +57,9 @@ async def on_message(message):
             # Needs more/less fields
             await message.channel.send('Erreur : Vous devez ajouter {0} champs, ce qui signifie qu\'il ne peut y avoir que {1} point virgule.'.format(FIELDS,FIELDS-1))
 
-    if message.content.startswith('!ba'):
+    if message.content.startswith('!ba') or message.content.startswith('!BA'):
         SPREADSHEET_ID = '1sKOLoQ054RbXuG5IW_ZSBc4wI6OZ0zp9_x-WieIeAfY' # Add ID here
-        RANGE_NAME = 'K1'
+        RANGE_NAME = 'K2'
         SAMPLE_RANGE = 'R1:S1'
         FIELDS = 2 # Amount of fields/cells
 
@@ -70,14 +71,37 @@ async def on_message(message):
             # Add
             print(message.created_at.strftime("%d.%m.%Y %H:%M"))
             DATA = [message.author.name] + [str(message.author.id)] + [str(message.created_at.strftime("%d.%m.%Y %H:%M"))] + [''] + result
-            DATA2 = result2
             sheet.add(SPREADSHEET_ID, RANGE_NAME, DATA)
-            sheet.read(SPREADSHEET_ID, SAMPLE_RANGE, DATA2)
+            #sheet.read(SPREADSHEET_ID, SAMPLE_RANGE,DATA)
             #await message.channel.send('Vos données ont été enregistrées', delete_after=5)
             await message.delete()
             await message.channel.send(f"Votre Argent:**{DATA[4]}/s** -- Votre Besoin:**{DATA[5]}/s**\n\nVos données ont été enregistrées\nAuto destruction du message dans 15s", delete_after=15)
             #await message.channel.send(f"vous avez {DATA[3]}/s et vous voulez obtenir {DATA[4]}/s\nVous devez attendre ... ou ... (Temps hors ligne)\n**se message va s\'auto detruire dans 10 secondes**", delete_after=10) ## Voir le resultat
-            print(DATA2)
+            print()
+        else:
+            # Needs more/less fields
+            await message.channel.send('Erreur : Vous devez ajouter {0} champs, ce qui signifie qu\'il ne peut y avoir que {1} point virgule.'.format(FIELDS,FIELDS-1))
+
+    if message.content.startswith('!Lire') or message.content.startswith('!lire'):
+        SPREADSHEET_ID = '1sKOLoQ054RbXuG5IW_ZSBc4wI6OZ0zp9_x-WieIeAfY' # Add ID here
+
+        SAMPLE_RANGE = 'R1:S1'
+        FIELDS = 0 # Amount of fields/cells
+        value = []
+        # Code
+        msg = message.content[4:]
+
+        result2 = []
+        if len(result2) == FIELDS:
+            # Add
+            print(message.created_at.strftime("%d.%m.%Y %H:%M"))
+            DATA = value
+            sheet.read(SPREADSHEET_ID, SAMPLE_RANGE,DATA)
+            #await message.channel.send('Vos données ont été enregistrées', delete_after=5)
+            await message.delete()
+            #await message.channel.send(f"Votre Argent:**{DATA[0]}/s** -- Votre Besoin:**{DATA[1]}/s**\n\nVos données ont été enregistrées\nAuto destruction du message dans 15s", delete_after=15)
+            #await message.channel.send(f"vous avez {DATA[3]}/s et vous voulez obtenir {DATA[4]}/s\nVous devez attendre ... ou ... (Temps hors ligne)\n**se message va s\'auto detruire dans 10 secondes**", delete_after=10) ## Voir le resultat
+            print(DATA)
         else:
             # Needs more/less fields
             await message.channel.send('Erreur : Vous devez ajouter {0} champs, ce qui signifie qu\'il ne peut y avoir que {1} point virgule.'.format(FIELDS,FIELDS-1))
